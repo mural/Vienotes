@@ -1,8 +1,11 @@
 package com.vienotes.repository
 
+import CreateTaskMutation
+import DeleteTaskMutation
 import TasksQuery
 import android.content.Context
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
 import com.vienotes.domain.Task
@@ -41,17 +44,33 @@ open class TasksRepository(
         return tasks
     }
 
+    open suspend fun createTask(task: Task): Boolean {
+        try {
+            apolloClient.mutate(CreateTaskMutation(task.name, Input.fromNullable(task.detail)))
+                .await()
+
+        } catch (e: ApolloException) {
+            // handle protocol errors
+            e.printStackTrace()
+            return false
+        }
+        return true
+    }
+
+    open suspend fun deleteTask(taskId: String): Boolean {
+        try {
+            apolloClient.mutate(DeleteTaskMutation(taskId)).await()
+
+        } catch (e: ApolloException) {
+            // handle protocol errors
+            e.printStackTrace()
+            return false
+        }
+        return true
+    }
+
 }
 
-//        coroutinesManager.ioScope.launch {
-//            val response = try {
-//                apolloClient.query(TasksQuery()).await()
-//            } catch (e: ApolloException) {
-//                // handle protocol errors
-//                e.printStackTrace()
-//                return@launch
-//            }
-//
 ////            val launch = response.data?.allTasks
 ////            if (launch == null || response.hasErrors()) {
 ////                // handle application errors
@@ -61,6 +80,3 @@ open class TasksRepository(
 ////
 ////            // launch now contains a typesafe model of your data
 ////            Log.d(this.toString(), "Tasks qty: ${launch.size}")
-//
-//            return@launch response.data?.allTasks
-//        }

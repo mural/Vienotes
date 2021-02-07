@@ -2,13 +2,21 @@
     <string name="app_name">Vienotes</string>
     <string name="action_update">Update</string>
 
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
+    <string name="loading">Loading…</string>
+    <string name="empty_notes">No notes</string>
+    <string name="create">Create</string>
+    <string name="delete">Delete</string>
+    <string name="error_try_again">There was an error, please try again</string>
+    <string name="fill_all_fields">Fill all the fields</string>
+    <string name="status_pending">Status: Pending</string>
+    <string name="status_done">Status: Done :)</string>
+    <string name="task_created_ok">Task created :D</string>
+    <string name="task_deleted_ok">Task deleted</string>
+    <string name="hint_name">Task name</string>
+    <string name="hint_note">Write task detail</string>
+    <string name="title_create_note">Create a new Task</string>
+    <string name="title_task_detail">Task detail</string>
 
-    <string name="loading">Loading....</string>
-
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="list_fragment_label">Task List</string>
+    <string name="detail_fragment_label">Task Detail</string>
 </resources>

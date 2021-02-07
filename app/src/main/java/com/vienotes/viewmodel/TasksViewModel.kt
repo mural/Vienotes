@@ -11,4 +11,15 @@ class TasksViewModel(private val coroutinesManager: CoroutinesManager, private v
 
         return tasksRepository.listAllTasks()
     }
+
+    suspend fun createTask(task: Task): Boolean {
+
+        return tasksRepository.createTask(task)
+    }
+
+    suspend fun deleteTask(taskId: String): Boolean {
+
+        return tasksRepository.deleteTask(taskId)
+    }
+
 }

@@ -1,5 +1,5 @@
-mutation CreateTask {
-  createTask(name:"task name", note: "note here", isDone:false) {
+mutation CreateTask($name: String!, $note: String) {
+  createTask(name:$name, note:$note, isDone:false) {
     id
     name
     note
