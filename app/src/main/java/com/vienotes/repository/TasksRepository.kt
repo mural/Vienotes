@@ -3,21 +3,18 @@ package com.vienotes.repository
 import CreateTaskMutation
 import DeleteTaskMutation
 import TasksQuery
-import android.content.Context
 import com.apollographql.apollo.ApolloClient
 import com.apollographql.apollo.api.Input
 import com.apollographql.apollo.coroutines.await
 import com.apollographql.apollo.exception.ApolloException
+import com.vienotes.base.Resource
 import com.vienotes.domain.Task
-import com.vienotes.manager.CoroutinesManager
 
 open class TasksRepository(
-    val context: Context,
-    private val coroutinesManager: CoroutinesManager,
     private val apolloClient: ApolloClient
 ) {
 
-    open suspend fun listAllTasks(): List<Task> {
+    open suspend fun listAllTasks(): Resource<List<Task>> {
         val tasks: MutableList<Task> = mutableListOf()
         try {
             val response = apolloClient.query(TasksQuery()).await()
@@ -38,45 +35,38 @@ open class TasksRepository(
 
 
         } catch (e: ApolloException) {
-            // handle protocol errors
-            e.printStackTrace()
+            return Resource.error(e)
         }
-        return tasks
+        return Resource.success(tasks)
     }
 
-    open suspend fun createTask(task: Task): Boolean {
+    open suspend fun createTask(task: Task): Resource<Boolean> {
         try {
-            apolloClient.mutate(CreateTaskMutation(task.name, Input.fromNullable(task.detail)))
-                .await()
+            val response =
+                apolloClient.mutate(CreateTaskMutation(task.name, Input.fromNullable(task.detail)))
+                    .await()
+            response.data?.let { data ->
+                if (data.createTask == null) return Resource.error()
+            }
 
         } catch (e: ApolloException) {
-            // handle protocol errors
-            e.printStackTrace()
-            return false
+            return Resource.error(e)
         }
-        return true
+        return Resource.success(true)
     }
 
-    open suspend fun deleteTask(taskId: String): Boolean {
+    open suspend fun deleteTask(taskId: String): Resource<Boolean> {
         try {
-            apolloClient.mutate(DeleteTaskMutation(taskId)).await()
-
+            val response = apolloClient.mutate(DeleteTaskMutation(taskId)).await()
+            response.data?.let { data ->
+                data.deleteTask?.let {
+                    if (!it) return Resource.error()
+                }
+            }
         } catch (e: ApolloException) {
-            // handle protocol errors
-            e.printStackTrace()
-            return false
+            return Resource.error(e)
         }
-        return true
+        return Resource.success(true)
     }
 
 }
-
-////            val launch = response.data?.allTasks
-////            if (launch == null || response.hasErrors()) {
-////                // handle application errors
-////                Log.d(this.toString(), "response error")
-////                return@launch
-////            }
-////
-////            // launch now contains a typesafe model of your data
-////            Log.d(this.toString(), "Tasks qty: ${launch.size}")

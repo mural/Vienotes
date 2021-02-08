@@ -2,22 +2,22 @@ package com.vienotes.base
 
 import android.content.Context
 import androidx.fragment.app.Fragment
-import com.vienotes.FABBehavior
+import com.vienotes.MainActivityActions
 
 open class BaseFragment : Fragment() {
 
-    protected lateinit var fabBehavior: FABBehavior
+    protected lateinit var mainActivityActions: MainActivityActions
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is FABBehavior) {
-            fabBehavior = context
+        if (context is MainActivityActions) {
+            mainActivityActions = context
         }
     }
 
     override fun onResume() {
         super.onResume()
-        fabBehavior.showFAB(false)
+        mainActivityActions.showFAB(false)
     }
 
 }

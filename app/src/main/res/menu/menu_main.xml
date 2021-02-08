@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.smartledge.vienotes.com.vienotes.MainActivity">
     <item
-        android:id="@+id/action_update"
+        android:id="@+id/action_refresh"
         android:orderInCategory="100"
-        android:title="@string/action_update"
+        android:title="@string/action_refresh"
         app:showAsAction="never" />
 </menu>

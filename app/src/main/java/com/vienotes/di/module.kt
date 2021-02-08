@@ -30,8 +30,8 @@ val networkModule = module {
 
     single { provideApolloClient(get(), get()) }
 
-    single { TasksRepository(get(), get(), get()) }
-    single { TokenRepository(get(), get(), get()) }
+    single { TasksRepository(get()) }
+    single { TokenRepository(get()) }
 
     factory { AuthorizationInterceptor(get(), get()) }
 }

@@ -18,6 +18,9 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField "String", "API_KEY", '"0d6d8a3b-3d10-47e6-a5db-864ae088a7c6"'
+        buildConfigField "String", "API_USERNAME", '"AGUSTIN"'
     }
 
     buildTypes {
@@ -55,6 +58,7 @@ dependencies {
     // Design
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     // Utils
     implementation 'com.google.code.gson:gson:2.8.6'
@@ -74,6 +78,7 @@ dependencies {
     testImplementation 'androidx.arch.core:core-testing:2.1.0'
     testImplementation 'org.mockito:mockito-core:2.28.2'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0'
+    testImplementation 'org.mockito:mockito-inline:2.21.0'
     testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.4.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

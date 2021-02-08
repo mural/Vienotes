@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.smartledge.vienotes.R
 import com.vienotes.base.BaseFragment
+import com.vienotes.base.Resource
 import com.vienotes.domain.Task
 import com.vienotes.domain.UserSession
 import com.vienotes.manager.CoroutinesManager
@@ -25,6 +26,7 @@ class TaskListFragment : BaseFragment(), TaskAdapter.TaskItemClickListener {
     private val userSession by inject<UserSession>()
     private val coroutinesManager by inject<CoroutinesManager>()
 
+    private var tasksResponse: Resource<List<Task>> = Resource.default()
     private var tasksList: List<Task> = listOf()
     private var taskAdapter: TaskAdapter? = null
 
@@ -39,19 +41,42 @@ class TaskListFragment : BaseFragment(), TaskAdapter.TaskItemClickListener {
         super.onViewCreated(view, savedInstanceState)
 
         retrieveList()
+
+        swipeRefreshLayout.setOnRefreshListener {
+            retrieveList()
+            swipeRefreshLayout.isRefreshing = false
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        fabBehavior.showFAB(true)
+        mainActivityActions.showFAB(true)
     }
 
     private fun retrieveList() {
+        coroutinesManager.uiScope.launch {
+            info_text.text = context?.getString(R.string.loading)
+            info_text.visibility = View.VISIBLE
+            tasklistRecycleview.visibility = View.GONE
+        }
         coroutinesManager.ioScope.launch {
             userSession.saveUserToken(tokenViewModel.getAccessToken())
 
-            tasksList = tasksViewModel.getTasksList()
-            updateList()
+            tasksResponse = tasksViewModel.getTasksList(pendingOnly = false)
+            if (Resource.Status.SUCCESS == tasksResponse.status) {
+                tasksResponse.data?.let {
+                    tasksList = it
+                }
+                updateList()
+            } else {
+                coroutinesManager.uiScope.launch {
+                    tasklistRecycleview?.apply {
+                        visibility = View.GONE
+                        info_text.visibility = View.VISIBLE
+                        info_text.text = context?.getString(R.string.error_try_again)
+                    }
+                }
+            }
         }
     }
 
@@ -61,8 +86,9 @@ class TaskListFragment : BaseFragment(), TaskAdapter.TaskItemClickListener {
                 taskAdapter = TaskAdapter(requireContext(), tasksList, this@TaskListFragment)
                 adapter = taskAdapter
             }
-            loading_text?.apply {
-                visibility = if (tasksList.isEmpty()) View.VISIBLE else View.GONE
+            tasklistRecycleview?.apply {
+                visibility = if (tasksList.isEmpty()) View.GONE else View.VISIBLE
+                info_text.visibility = if (tasksList.isEmpty()) View.VISIBLE else View.GONE
             }
         }
     }

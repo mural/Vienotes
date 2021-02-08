@@ -7,7 +7,7 @@ import androidx.navigation.findNavController
 import com.smartledge.vienotes.R
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), FABBehavior {
+class MainActivity : AppCompatActivity(), MainActivityActions {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,28 +19,12 @@ class MainActivity : AppCompatActivity(), FABBehavior {
         }
     }
 
-    //No menu options yet
-//    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        menuInflater.inflate(R.menu.menu_main, menu)
-//        return true
-//    }
-//
-//    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        return when (item.itemId) {
-//            R.id.action_update -> true
-//            else -> super.onOptionsItemSelected(item)
-//        }
-//    }
-
     override fun showFAB(show: Boolean) {
         fab.visibility = if (show) View.VISIBLE else View.GONE
     }
 }
 
-interface FABBehavior {
+interface MainActivityActions {
     fun showFAB(show: Boolean)
+
 }
