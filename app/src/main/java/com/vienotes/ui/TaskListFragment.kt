@@ -95,9 +95,7 @@ class TaskListFragment : BaseFragment(), TaskAdapter.TaskItemClickListener {
             tasklistRecycleview?.apply {
                 visibility = if (tasksList.isEmpty()) View.GONE else View.VISIBLE
                 info_text.visibility = if (tasksList.isEmpty()) View.VISIBLE else View.GONE
-                info_text.text = (if (tasksList.isEmpty()) {
-                    context?.getString(R.string.empty_notes)
-                }).toString()
+                if (tasksList.isEmpty()) info_text.text = context?.getString(R.string.empty_notes)
                 Log.d(TaskListFragment::class.simpleName, "get list ok, after filling adapter, update view")
             }
         }
