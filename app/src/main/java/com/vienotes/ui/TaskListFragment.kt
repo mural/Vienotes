@@ -1,6 +1,7 @@
 package com.vienotes.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,15 +59,18 @@ class TaskListFragment : BaseFragment(), TaskAdapter.TaskItemClickListener {
             info_text.text = context?.getString(R.string.loading)
             info_text.visibility = View.VISIBLE
             tasklistRecycleview.visibility = View.GONE
+            Log.d(TaskListFragment::class.simpleName, "loading...")
         }
         coroutinesManager.ioScope.launch {
             userSession.saveUserToken(tokenViewModel.getAccessToken())
+            Log.d(TaskListFragment::class.simpleName, "save token")
 
             tasksResponse = tasksViewModel.getTasksList(pendingOnly = false)
             if (Resource.Status.SUCCESS == tasksResponse.status) {
                 tasksResponse.data?.let {
                     tasksList = it
                 }
+                Log.d(TaskListFragment::class.simpleName, "get list ok, update view")
                 updateList()
             } else {
                 coroutinesManager.uiScope.launch {
@@ -75,6 +79,7 @@ class TaskListFragment : BaseFragment(), TaskAdapter.TaskItemClickListener {
                         info_text.visibility = View.VISIBLE
                         info_text.text = context?.getString(R.string.error_try_again)
                     }
+                    Log.d(TaskListFragment::class.simpleName, "get list error, update view")
                 }
             }
         }
@@ -85,10 +90,15 @@ class TaskListFragment : BaseFragment(), TaskAdapter.TaskItemClickListener {
             tasklistRecycleview?.apply {
                 taskAdapter = TaskAdapter(requireContext(), tasksList, this@TaskListFragment)
                 adapter = taskAdapter
+                Log.d(TaskListFragment::class.simpleName, "get list ok, fill adapter")
             }
             tasklistRecycleview?.apply {
                 visibility = if (tasksList.isEmpty()) View.GONE else View.VISIBLE
                 info_text.visibility = if (tasksList.isEmpty()) View.VISIBLE else View.GONE
+                info_text.text = (if (tasksList.isEmpty()) {
+                    context?.getString(R.string.empty_notes)
+                }).toString()
+                Log.d(TaskListFragment::class.simpleName, "get list ok, after filling adapter, update view")
             }
         }
     }
