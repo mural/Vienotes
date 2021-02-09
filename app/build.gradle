@@ -6,6 +6,10 @@ plugins {
     id 'com.apollographql.apollo' version '2.5.3'
 }
 
+def Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+
 android {
     compileSdkVersion 30
     buildToolsVersion "30.0.3"
@@ -19,7 +23,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField "String", "API_KEY", '"0d6d8a3b-3d10-47e6-a5db-864ae088a7c6"'
+        buildConfigField "String", "API_KEY", properties.getProperty("api.access.token", "")
         buildConfigField "String", "API_USERNAME", '"AGUSTIN"'
     }
 
